@@ -27,17 +27,27 @@ function audioVisualizer(audio) {
 
     function animate() {
         requestAnimationFrame(animate);
-        x = 0;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         analyser.getByteFrequencyData(dataArray);
+        x = 0;
         for (let i = 0; i < bufferLength; i++) {
             barHeight = dataArray[i];
             const red = dataArray[i] * 2,
                 green = i * 4,
                 blue = barHeight / 2;
 
+            ctx.beginPath();
             ctx.fillStyle = "white";
-            ctx.fillRect(canvas.width / 2 - x, canvas.height - barHeight - 20, barWidth, 5);
+            ctx.arc(
+                canvas.width / 2 - x + barWidth / 2,
+                canvas.height - barHeight - 20,
+                barWidth / 2,
+                0,
+                Math.PI * 2,
+                false
+            );
+            ctx.fill();
+            ctx.closePath();
             ctx.fillStyle = `rgb(${red}, ${green}, ${blue})`;
             ctx.fillRect(
                 canvas.width / 2 - x,
@@ -47,14 +57,25 @@ function audioVisualizer(audio) {
             );
             x += barWidth;
         }
+
         for (let i = 0; i < bufferLength; i++) {
-            barHeight = dataArray[i];
+            let barHeight = dataArray[i];
             const red = dataArray[i] * 2,
                 green = i * 4,
                 blue = barHeight / 2;
 
+            ctx.beginPath();
+            ctx.arc(
+                x + barWidth / 2,
+                canvas.height - barHeight - 20,
+                barWidth / 2,
+                0,
+                Math.PI * 2,
+                false
+            );
             ctx.fillStyle = "white";
-            ctx.fillRect(x, canvas.height - barHeight - 20, barWidth, 5);
+            ctx.fill();
+            ctx.closePath();
             ctx.fillStyle = `rgb(${red}, ${green}, ${blue})`;
             ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
             x += barWidth;
